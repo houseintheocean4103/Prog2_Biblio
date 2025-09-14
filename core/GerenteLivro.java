@@ -166,7 +166,7 @@ public class GerenteLivro {
 
         try {
             livroService.adicionarLivro(novoLivro);
-            menuService.exibirMensagem("Livro cadastrado com sucesso!");
+            menuService.exibirMensagem("Livro cadastrado com sucesso! ID: " + livroService.getTodosLivros().getLast().id);
         } catch (Exception e) {
             menuService.exibirErro(e.getMessage());
         }
