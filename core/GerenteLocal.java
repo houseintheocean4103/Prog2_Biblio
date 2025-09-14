@@ -55,7 +55,7 @@ public class GerenteLocal {
     	this.livroservice = new LivroServiceImpl();
         this.scan = new Scanner(System.in);
     }
-    
+    //Método que retorna o estado atual da lista de livros
     private List<Livro> getLivrosAtualizados() {
         return livroservice.getTodosLivros();
     }
