@@ -46,7 +46,7 @@ enum Estante {
 // Classe principal que gerencia a localização dos livros na biblioteca
 public class GerenteLocal {
 	
-	LivroService livroservice;
+	LivroService livroservice; //Integração com o sistema de livros existente
     private Scanner scan; // Scanner para entrada de dados do usuário
     
     // Construtor que inicializa a lista de livros e o scanner
