@@ -9,14 +9,14 @@ import java.util.Scanner;
 
 public class MenuFacade {
 	
-	GerenteUser gUsers;
+	GerenteUser gUsers;     
 	GerenteLocal gLocal;
 	GerenteDevolucao gDev;
 	GerenteLivro gLivros;
 	
 	public MenuFacade(){
 		
-		gUsers = new GerenteUser();
+		gUsers = new GerenteUser();     //Inicialização dos gerenciadores
 		gLocal = new GerenteLocal();
 		gDev = new GerenteDevolucao();
 		gLivros = new GerenteLivro();
