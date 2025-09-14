@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class GerenteUser {
 	
-	ArrayList<User> usuarios = new ArrayList<>();
+	static ArrayList<User> usuarios = new ArrayList<>();
 
 	Scanner scan = new Scanner(System.in);
 
