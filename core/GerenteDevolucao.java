@@ -28,7 +28,7 @@ public class GerenteDevolucao {
     public GerenteDevolucao() {
     	this.livroservice = new LivroServiceImpl();
     }
-    
+    //Método que retorna o estado atual da lista de livros
     private List<Livro> getLivrosAtualizados() {
         return livroservice.getTodosLivros();
     }
