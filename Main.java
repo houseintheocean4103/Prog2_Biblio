@@ -1,8 +1,10 @@
-import core.LivroGerente;
+import facade.MenuFacade;
 
 public class Main {
 	public static void main(String[] args) {
-		LivroGerente livroGerente = new LivroGerente();
-		livroGerente.iniciar();
+
+		//Instancia um objeto façade
+		MenuFacade a = new MenuFacade();
+		a.menu();
 	}
 }
