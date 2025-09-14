@@ -8,23 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// Implementação concreta da interface LivroService
+// Contém a lógica de negócio para manipular livros
 public class LivroServiceImpl implements LivroService {
-    private final BaseDeLivros baseDeLivros;
-    private final List<Livro> livros;
+    private final BaseDeLivros baseDeLivros; // Singleton que armazena os livros
+    private final List<Livro> livros;        // Lista real de livros
 
     public LivroServiceImpl() {
-        this.baseDeLivros = BaseDeLivros.getInstance();
-        this.livros = baseDeLivros.getLivros();
+        this.baseDeLivros = BaseDeLivros.getInstance(); // Pega instância única
+        this.livros = baseDeLivros.getLivros();         // Acessa lista de livros
     }
 
     @Override
     public void adicionarLivro(Livro livro) {
-        // Generate a new unique ID
+        // Gera novo ID único, baseado no maior já existente
         int novoId = livros.stream()
                 .mapToInt(Livro::getId)
                 .max()
                 .orElse(0) + 1;
 
+        // Cria um novo livro com o ID gerado
         Livro novoLivro = new Livro(
                 livro.getTitulo(),
                 livro.getIsbn(),
@@ -37,16 +40,18 @@ public class LivroServiceImpl implements LivroService {
                 novoId
         );
 
-        livros.add(novoLivro);
+        livros.add(novoLivro); // Adiciona à lista
     }
 
+    // Retorna a lista
     @Override
     public List<Livro> getTodosLivros() {
-        return new ArrayList<>(livros);
+        return livros;
     }
 
+    // Busca livro pelo ID usando Stream API, repetindo-se a lógica para os outros critérios
     @Override
-    public Optional<Livro> buscarPorId(int id) {
+    public Optional<Livro> buscarPorId(int id) {   
         return livros.stream()
                 .filter(livro -> livro.getId() == id)
                 .findFirst();
@@ -54,6 +59,7 @@ public class LivroServiceImpl implements LivroService {
 
     @Override
     public List<Livro> buscarPorTitulo(String titulo) {
+        // Busca parcial (ignora maiúsculas/minúsculas)
         return livros.stream()
                 .filter(livro -> livro.getTitulo().toLowerCase().contains(titulo.toLowerCase()))
                 .toList();
@@ -89,6 +95,7 @@ public class LivroServiceImpl implements LivroService {
 
     @Override
     public List<Livro> buscarPorStatus(boolean ativo) {
+        // Retorna todos os livros ativos ou inativos
         return livros.stream()
                 .filter(livro -> livro.isAtivo() == ativo)
                 .toList();
@@ -101,6 +108,7 @@ public class LivroServiceImpl implements LivroService {
 
     @Override
     public boolean atualizarLivro(int id, Livro livroAtualizado) {
+        // Substitui livro existente por outro com novos dados
         for (int i = 0; i < livros.size(); i++) {
             if (livros.get(i).getId() == id) {
                 Livro livroModificado = new Livro(
@@ -112,32 +120,36 @@ public class LivroServiceImpl implements LivroService {
                         livroAtualizado.getGenero(),
                         livroAtualizado.getSinopse(),
                         livroAtualizado.getLocal(),
-                        id
+                        id // mantém o mesmo ID
                 );
-                livros.set(i, livroModificado);
+                livros.set(i, livroModificado); // substitui na lista
                 return true;
             }
         }
-        return false;
+        return false; // se não encontrou, retorna falso
     }
 
     @Override
     public boolean removerLivro(int id) {
+        // Remove da lista
         return livros.removeIf(livro -> livro.getId() == id);
     }
 
     @Override
     public void salvarDados() {
+        // Atualiza os dados chamando o repositório
         baseDeLivros.salvarDados();
     }
 
     @Override
     public void ativarLivro(int id) {
+        // Ativa o livro encontrado
         buscarPorId(id).ifPresent(Livro::ativar);
     }
 
     @Override
     public void desativarLivro(int id) {
+        // Desativa o livro encontrado
         buscarPorId(id).ifPresent(Livro::desativar);
     }
 }
