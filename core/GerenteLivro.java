@@ -9,24 +9,30 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class LivroGerente {
-    private final LivroService livroService;
-    private final MenuService menuService;
-    private final Scanner scanner;
+// Classe "controladora" do sistema.
+// Coordena o fluxo entre MenuService (entrada/saída) e LivroService (lógica de negócio).
+public class GerenteLivro {
+	
+    private final LivroService livroService; // Camada de serviço
+    private final MenuService menuService;   // Camada de interface
+    private final Scanner scanner;           // Scanner para entrada do usuário
 
-    public LivroGerente() {
-        this.scanner = new Scanner(System.in);
-        this.livroService = new LivroServiceImpl();
-        this.menuService = new MenuService(scanner);
+    //Construtor
+    public GerenteLivro() {
+        this.scanner = new Scanner(System.in);      // Cria scanner
+        this.livroService = new LivroServiceImpl(); // Cria implementação concreta
+        this.menuService = new MenuService(scanner);// Cria menu passando scanner
     }
 
+    // Loop principal do programa
     public void iniciar() {
         int opcao;
         do {
-            menuService.limparTela();
-            menuService.exibirMenuPrincipal();
-            opcao = menuService.lerInteiro("");
+            menuService.limparTela();           // Limpa tela
+            menuService.exibirMenuPrincipal();  // Mostra menu principal
+            opcao = menuService.lerInteiro(""); // Lê opção escolhida
 
+            // Despacha opção escolhida
             switch (opcao) {
                 case 1 -> buscarLivro();
                 case 2 -> listarLivros();
@@ -41,14 +47,14 @@ public class LivroGerente {
                 default -> menuService.exibirErro("Opção inválida!");
             }
 
+            // Pausa para usuário ler mensagens
             if (opcao != 0) {
                 menuService.pausar();
             }
         } while (opcao != 0);
-
-        scanner.close();
     }
 
+    // --- BUSCA ---
     private void buscarLivro() {
         menuService.exibirMenuBusca();
         int opcao = menuService.lerInteiro("");
@@ -58,8 +64,7 @@ public class LivroGerente {
             case 2 -> buscarPorISBN();
             case 3 -> buscarPorSinopse();
             case 4 -> buscarPorId();
-            case 0 -> {
-            }
+            case 0 -> { } // Volta ao menu
             default -> menuService.exibirErro("Opção inválida!");
         }
     }
@@ -73,6 +78,7 @@ public class LivroGerente {
     private void buscarPorISBN() {
         String isbn = menuService.lerString("Digite o ISBN: ");
         List<Livro> livrosEncontrados = new ArrayList<>();
+        // Busca manual (não usa service diretamente aqui)
         for (Livro livro : livroService.getTodosLivros()) {
             if (livro.getIsbn().equalsIgnoreCase(isbn)) {
                 livrosEncontrados.add(livro);
@@ -102,6 +108,7 @@ public class LivroGerente {
         }
     }
 
+    // --- LISTAGEM ---
     private void listarLivros() {
         menuService.exibirMenuListagem();
         int opcao = menuService.lerInteiro("");
@@ -131,21 +138,20 @@ public class LivroGerente {
                 livros = livroService.buscarPorStatus(true);
                 menuService.exibirMensagem("Livros disponíveis para empréstimo:");
             }
-            case 0 -> {
-                return;
-            }
+            case 0 -> { return; }
             default -> {
                 menuService.exibirErro("Opção inválida!");
                 return;
             }
         }
-
         exibirResultadosBusca(livros);
     }
 
+    // --- CADASTRO ---
     private void cadastrarLivro() {
         menuService.exibirMenuCadastro();
 
+        // Coleta dados do livro
         String titulo = menuService.lerString("Título: ");
         String isbn = menuService.lerString("ISBN: ");
         String autor = menuService.lerString("Autor: ");
@@ -155,6 +161,7 @@ public class LivroGerente {
         String sinopse = menuService.lerString("Sinopse: ");
         String local = menuService.lerString("Localização: ");
 
+        // Cria objeto Livro (ID gerado será sobrescrito no service)
         Livro novoLivro = new Livro(titulo, isbn, autor, ano, editora, genero, sinopse, local, 0);
 
         try {
@@ -165,7 +172,9 @@ public class LivroGerente {
         }
     }
 
+    // --- CÓPIA ---
     private void copiarLivro() {
+    	
         menuService.exibirMenuCopia();
         int id = menuService.lerInteiro("Digite o ID do livro original: ");
 
@@ -177,7 +186,8 @@ public class LivroGerente {
 
         Livro original = livroOptional.get();
         int copias = menuService.lerInteiro("Quantas cópias deseja criar? ");
-
+        
+        //Replica os atributos através dos Getters
         for (int i = 0; i < copias; i++) {
             Livro copia = new Livro(
                     original.getTitulo(),
@@ -196,9 +206,11 @@ public class LivroGerente {
         menuService.exibirMensagem(copias + " cópias criadas com sucesso!");
     }
 
+    // --- EDIÇÃO ---
     private void editarLivro() {
+    	
         menuService.exibirMensagem("\n=== EDIÇÃO DE LIVRO ===");
-        int id = menuService.lerInteiro("Digite o ID do livro a editar: ");
+        int id = menuService.lerInteiro("Digite o ID do livro a editar: "); //Busca por ID
 
         Optional<Livro> livroOptional = livroService.buscarPorId(id);
         if (livroOptional.isEmpty()) {
@@ -214,6 +226,7 @@ public class LivroGerente {
             menuService.exibirMenuEdicao();
             opcao = menuService.lerInteiro("");
 
+            // Cria cópia modificável do livro atual
             Livro livroAtualizado = new Livro(
                     livro.getTitulo(),
                     livro.getIsbn(),
@@ -225,7 +238,8 @@ public class LivroGerente {
                     livro.getLocal(),
                     livro.getId()
             );
-
+            
+            //Altera os atributos a partir de Setters
             switch (opcao) {
                 case 1 -> livroAtualizado.setTitulo(menuService.lerString("Novo título: "));
                 case 2 -> livroAtualizado.setIsbn(menuService.lerString("Novo ISBN: "));
@@ -235,11 +249,11 @@ public class LivroGerente {
                 case 6 -> livroAtualizado.setGenero(menuService.lerString("Novo gênero: "));
                 case 7 -> livroAtualizado.setSinopse(menuService.lerString("Nova sinopse: "));
                 case 8 -> livroAtualizado.setLocal(menuService.lerString("Nova localização: "));
-                case 0 -> {
-                }
+                case 0 -> { }
                 default -> menuService.exibirErro("Opção inválida!");
             }
 
+            // Salva se alteração foi válida
             if (opcao != 0 && opcao <= 8) {
                 boolean sucesso = livroService.atualizarLivro(id, livroAtualizado);
                 if (sucesso) {
@@ -251,6 +265,7 @@ public class LivroGerente {
         } while (opcao != 0);
     }
 
+    // --- ATIVAÇÃO/DESATIVAÇÃO ---
     private void desativarLivro() {
         int id = menuService.lerInteiro("Digite o ID do livro a desativar: ");
         livroService.desativarLivro(id);
@@ -263,6 +278,7 @@ public class LivroGerente {
         menuService.exibirMensagem("Livro ativado com sucesso!");
     }
 
+    // --- DELEÇÃO ---
     private void deletarLivro() {
         int id = menuService.lerInteiro("Digite o ID do livro a deletar: ");
         boolean sucesso = livroService.removerLivro(id);
@@ -273,6 +289,7 @@ public class LivroGerente {
         }
     }
 
+    // --- EXPORTAR DADOS ---
     private void exportarDados() {
         try {
             livroService.salvarDados();
@@ -282,6 +299,7 @@ public class LivroGerente {
         }
     }
 
+    // --- UTILIDADE: MOSTRAR RESULTADOS ---
     private void exibirResultadosBusca(List<Livro> livros) {
         if (livros.isEmpty()) {
             menuService.exibirMensagem("Nenhum livro encontrado.");
