@@ -2,13 +2,18 @@ package service;
 
 import java.util.Scanner;
 
+// Classe responsável por exibir os menus no console
+// e centralizar a leitura de entradas do usuário
 public class MenuService {
-    private final Scanner scanner;
+    private final Scanner scanner; // scanner compartilhado para ler inputs
 
     public MenuService(Scanner scanner) {
-        this.scanner = scanner;
+        this.scanner = scanner; // injeta o scanner externo
     }
 
+    // --- MENUS PRINCIPAIS ---
+    
+    //Menu de gerenciamento de livros
     public void exibirMenuPrincipal() {
         System.out.println("\n=== SISTEMA DE GERENCIAMENTO DE LIVROS ===");
         System.out.println("Qual serviço deseja realizar ?");
@@ -24,7 +29,8 @@ public class MenuService {
         System.out.println("[0] Sair");
         System.out.print("Opção: ");
     }
-
+    
+    //Menu de listagens diversas
     public void exibirMenuListagem() {
         System.out.println("\n=== LISTAGEM DE LIVROS ===");
         System.out.println("Qual filtro deseja utilizar?");
@@ -39,7 +45,8 @@ public class MenuService {
         System.out.println("[0] Voltar ao menu principal");
         System.out.print("Opção: ");
     }
-
+    
+    //Menu de buscas diversas
     public void exibirMenuBusca() {
         System.out.println("\n=== BUSCA DE LIVROS ===");
         System.out.println("Qual o parâmetro de busca?");
@@ -50,7 +57,8 @@ public class MenuService {
         System.out.println("[0] Voltar ao menu principal");
         System.out.print("Opção: ");
     }
-
+    
+    //Menu de edições diversas
     public void exibirMenuEdicao() {
         System.out.println("\n=== EDIÇÃO DE LIVRO ===");
         System.out.println("Qual dado deseja alterar?");
@@ -65,43 +73,52 @@ public class MenuService {
         System.out.println("[0] Finalizar edição");
         System.out.print("Opção: ");
     }
-
+    
+    //Menu de cadastro
     public void exibirMenuCadastro() {
         System.out.println("\n=== CADASTRO DE LIVRO ===");
     }
-
+    
+    //Menu de cópia
     public void exibirMenuCopia() {
         System.out.println("\n=== CRIAR CÓPIA DE LIVRO ===");
     }
 
-    // Utility methods
+    // --- MÉTODOS DE UTILIDADE ---
+
+    // Lê um número inteiro com mensagem
     public int lerInteiro(String mensagem) {
         System.out.print(mensagem);
         try {
             return scanner.nextInt();
         } finally {
-            scanner.nextLine();
+            scanner.nextLine(); // consome ENTER
         }
     }
 
+    // Lê uma string com mensagem
     public String lerString(String mensagem) {
         System.out.print(mensagem);
         return scanner.nextLine();
     }
 
+    // Exibe mensagem normal
     public void exibirMensagem(String mensagem) {
         System.out.println(mensagem);
     }
 
+    // Exibe mensagem de erro (console de erro)
     public void exibirErro(String mensagem) {
         System.err.println("Erro: " + mensagem);
     }
 
+    // Simula limpar a tela (sequência ANSI)
     public void limparTela() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
+    // Pausa execução até usuário pressionar ENTER
     public void pausar() {
         System.out.print("Pressione ENTER para continuar...");
         scanner.nextLine();
