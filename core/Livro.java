@@ -1,6 +1,8 @@
 package core;
 
 public class Livro {
+	
+	//Getters e Setters
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
 	}
@@ -72,7 +74,8 @@ public class Livro {
 	public int getId() {
 		return id;
 	}
-
+	
+	//Atributos
 	public String titulo;
 	public String isbn;
 	public String autor;
@@ -84,6 +87,7 @@ public class Livro {
 	public int id;
 	private boolean ativo = true;
 	
+	//Construtor
 	public Livro(String a, String b, String c, String d, String e, String f, String g, String h, int i){
 		this.titulo = a;
 		this.isbn = b;
@@ -96,10 +100,12 @@ public class Livro {
 		this.id = i; 
 	}
 	
+	//Retorna o status
 	public boolean isAtivo() {
 		return ativo;
 	}
 	
+	//Alteram o status
 	public void ativar() {
 		this.ativo = true;
 	}
@@ -108,6 +114,7 @@ public class Livro {
 		this.ativo = false;
 	}
 	
+	//Modificam a formatação do objeto
 	@Override
     public String toString() {
         return String.format("(\"ID: %d,"
